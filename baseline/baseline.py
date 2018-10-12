@@ -6,8 +6,8 @@ import sqlite3
 import json
 
 translator = str.maketrans('', '', string.punctuation)
-n_train = 20
-n_test = 5
+n_train = 1000
+n_test = 100
 class Model:
   def __init__(self):
     self.counts = defaultdict(float)
@@ -33,7 +33,6 @@ def train(pairs):
 def test(model, pairs):
   # returns (score, bad_score)
   # because we have five fingers
-  delta = 5
   differences = 0
   bad_differences = 0
   for i, (body, upvotes) in enumerate(pairs):
@@ -43,8 +42,10 @@ def test(model, pairs):
     for word in processed:
       # Otherwise long comments will be favored
       guess += model.counts[word] / n
-    difference = abs(guess - upvotes) / (delta + abs(upvotes))
-    bad_difference = abs(model.avg_score - upvotes) / (delta + abs(upvotes))
+    denom = abs(guess) + abs(upvotes)
+    bad_denom = abs(model.avg_score) + abs(upvotes)
+    difference = abs(guess - upvotes) / denom if denom > 0 else 0
+    bad_difference = abs(model.avg_score - upvotes) / bad_denom if bad_denom > 0 else 0
     differences += difference
     bad_differences += bad_difference
     if i >= n_test:
