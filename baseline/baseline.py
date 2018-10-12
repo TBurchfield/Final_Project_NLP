@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 
 from collections import defaultdict
+import string
 import sqlite3
 import json
 
-n_train = 100
-n_test = 10
+translator = str.maketrans('', '', string.punctuation)
+n_train = 20
+n_test = 5
 class Model:
   def __init__(self):
     self.counts = defaultdict(float)
     self.avg_score = 0
+
 def train(pairs):
   #return model
   model = Model()
   all_scores = 0
   for i, (body, score) in enumerate(pairs):
-    body = body.split()
-    n = len(body)
+    processed = body.translate(translator).lower().split()
+    n = len(processed)
     all_scores += score
-    for word in body:
+    for word in processed:
       # Otherwise long comments will be favored
       model.counts[word] += score / n
     if i >= n_train:
@@ -28,18 +31,20 @@ def train(pairs):
   return model
 
 def test(model, pairs):
-  #return (score, bad_score)
+  # returns (score, bad_score)
+  # because we have five fingers
+  delta = 5
   differences = 0
   bad_differences = 0
   for i, (body, upvotes) in enumerate(pairs):
     guess = 0
-    body = body.split()
-    n = len(body)
-    for word in body:
+    processed = body.translate(translator).lower().split()
+    n = len(processed)
+    for word in processed:
       # Otherwise long comments will be favored
       guess += model.counts[word] / n
-    difference = abs(guess - upvotes)
-    bad_difference = abs(model.avg_score - upvotes)
+    difference = abs(guess - upvotes) / (delta + abs(upvotes))
+    bad_difference = abs(model.avg_score - upvotes) / (delta + abs(upvotes))
     differences += difference
     bad_differences += bad_difference
     if i >= n_test:
@@ -60,4 +65,4 @@ if __name__ == '__main__':
     model = train(pairs)
     score, bad_score = test(model, pairs)
     print('score: {}'.format(score))
-    print('if we had just guessed avg score: {}'.format(bad_score))
+    print('if we had just guessed the average score of {}: {}'.format(model.avg_score, bad_score))
