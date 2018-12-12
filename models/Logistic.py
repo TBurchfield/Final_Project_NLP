@@ -18,7 +18,7 @@ class Logistic:
 
   def test(self, data, n_test):
     comments, scores = it.tee(it.islice(data.get_pairs(), 0, n_test))
-    comments = (f[self.i_body] for (i, s, f) in comments)
+    comments = np.array(list(f[self.i_body] for (i, s, f) in comments))
     scores = np.array(list((s for (i, s, f) in scores)))
     X = self.vectorizer.transform(comments)
     predict = self.model.predict(X)
