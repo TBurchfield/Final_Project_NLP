@@ -22,6 +22,4 @@ class Logistic:
     scores = np.array(list((s for (i, s, f) in scores)))
     X = self.vectorizer.transform(comments)
     predict = self.model.predict(X)
-    print(predict)
-    print(scores)
     return (predict, scores)
