@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 offset = 0
-n_train = 200000
-n_test = 5000
+n_train = 10000
+n_test = 500
 
 data = Data('data/database.sqlite')
 data.read('May2015', ['body'], offset=offset)

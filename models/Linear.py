@@ -12,7 +12,7 @@ class Linear:
     comments, scores = it.tee(it.islice(data.get_pairs(), 0, n_train))
     comments = np.array(list(f[self.i_body] for (i, s, f) in comments))
     scores = np.array(list(s for (i, s, f) in scores))
-    self.vectorizer = Vectorizer()
+    self.vectorizer = Vectorizer(ngram_range=(1,2))
     X = self.vectorizer.fit_transform(comments)
     self.model = LinearRegression(normalize=True).fit(X, scores)
 
