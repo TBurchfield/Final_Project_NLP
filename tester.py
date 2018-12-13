@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from models.data import Data
-from models.Perceptron import Perceptron as Model
+from models.NeuralNetwork import NeuralNetwork as Model
 from models.eval import smape
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,8 +12,11 @@ n_test = 500
 data = Data('data/database.sqlite')
 data.read('May2015', ['body'], offset=offset)
 model = Model(data, n_train)
+print('fuck you')
 predicted, actual = model.test(data, n_test)
+print('fuck you v2')
 print('Smape: {}'.format(smape(predicted, actual)))
+print('fuck you v3')
 print(n_train)
 print(n_test)
 #l = np.array(["", "the", "reddit", "a", "dog"])
