@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from models.data import Data
-from models.Linear import Linear as Model
+from models.Perceptron import Perceptron as Model
 from models.eval import smape
 import matplotlib.pyplot as plt
 import numpy as np
