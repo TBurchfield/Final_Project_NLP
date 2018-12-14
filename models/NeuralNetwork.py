@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 import keras
 import string
+from models.Neural_helper import loss_smape
 
 translator = str.maketrans(string.punctuation, ' '*len(string.punctuation)) 
 
@@ -31,18 +32,20 @@ class NeuralNetwork:
     self.batches = self.get_batches(batch_size)
     for comments, scores in it.islice(self.batches, 0, n_train // batch_size): 
       # numpy??????
+      print(comments.shape)
       self.model.train_on_batch(comments, scores)
 
   def create_model(self):
     self.model = keras.Sequential()
     n = len(self.tokenizer.word_counts)
-    hidden_size = 256# fucking kill me please
+    hidden_size = 256
+    # in shape: (batch, input_length)
     self.model.add(keras.layers.Embedding(n+1, hidden_size, input_length=1))
-    self.model.add(keras.layers.LSTM(hidden_size, return_sequences=True))
-    self.model.add(keras.layers.LSTM(hidden_size, return_sequences=True))
-    self.model.add(keras.layers.TimeDistributed(keras.layers.Dense(n)))
-    self.model.add(keras.layers.Activation('softmax'))
-    self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['categorical_accuracy'])
+    # (None, input_length, hidden_size)
+    self.model.add(keras.layers.LSTM(hidden_size))
+    # (None, hidden_size)
+    self.model.add(keras.layers.TimeDistributed(keras.layers.Dense(1)))
+    self.model.compile(loss=loss_smape, optimizer='adam', metrics=[loss_smape])
 
   def test(self, data, n_test):
     for comments, scores in it.islice(self.batches, 0, n_test // self.batch_size): 
@@ -57,11 +60,11 @@ class NeuralNetwork:
         return keras.utils.to_categorical(keras.preprocessing.text.one_hot(word, n)) + np.array([0])
     else:
         return np.zeros(n) + np.array([1])
-    
-    
+
+
   def get_batches(self, batch_size):
     start = 0
-    while True: 
+    while True:
       #comments = it.islice((self.sentence_to_one_hot(f[self.i_body]) for (_, _, f) in self.data.get_pairs()), start, start + batch_size)
       comments, scores = it.tee(it.islice(self.data.get_pairs(), 0, batch_size))
       comments = np.array(list((self.sentence_to_one_hot(f[self.i_body]) for (_, _, f) in comments)))

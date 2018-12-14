@@ -12,21 +12,24 @@ n_test = 500
 data = Data('data/database.sqlite')
 data.read('May2015', ['body'], offset=offset)
 model = Model(data, n_train)
-print('fuck you')
 predicted, actual = model.test(data, n_test)
-print('fuck you v2')
 print('Smape: {}'.format(smape(predicted, actual)))
-print('fuck you v3')
 print(n_train)
 print(n_test)
-#l = np.array(["", "the", "reddit", "a", "dog"])
-#testX = model.vectorizer.transform(l)
-#p = model.model.predict(testX)
-#print(model.model.intercept_)
-#print(p)
-#print(l)
 
 
-#plt.plot(predicted, actual, 'o')
-#plt.ylim()
-#plt.show()
+
+if False:
+
+  # These are some interesting visualizations possible with models that use the vectorizer
+  l = np.array(["", "the", "reddit", "a", "dog"])
+  testX = model.vectorizer.transform(l)
+  p = model.model.predict(testX)
+  print(model.model.intercept_)
+  print(p)
+  print(l)
+
+
+  plt.plot(predicted, actual, 'o')
+  plt.ylim()
+  plt.show()
