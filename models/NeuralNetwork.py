@@ -14,7 +14,7 @@ class NeuralNetwork:
     try:
       self.i_body = data.features.index('body')
     except ValueError:
-      raise ValueError('pls Don"t do that i need body')
+      raise ValueError('please include body')
 
     self.tokenizer = keras.preprocessing.text.Tokenizer()
     comments = it.islice((f[self.i_body] for (_, _, f) in self.data.get_pairs()), 0, n_train)

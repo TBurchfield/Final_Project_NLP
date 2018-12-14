@@ -1,4 +1,5 @@
 import numpy as np
+
 def smape(guessed, actual):
   def safesmape(g, a):
     denom = abs(g) + abs(a)
